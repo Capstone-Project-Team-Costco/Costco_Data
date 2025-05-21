@@ -10,12 +10,21 @@ import numpy as np
 import google.generativeai as genai
 from sentence_transformers import SentenceTransformer
 from datetime import datetime
+
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Retrieve the Gemini API key securely
+
+
 ###
 #
 # ---------------------------
 # 1. Configure Gemini API
 # ---------------------------
-genai.configure(api_key="AIzaSyBRqHqqmnDmGeunKEJcq5SFVtOzqtBY8o4")  # <-- Replace this with your real Gemini API key
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))  # <-- Replace this with your real Gemini API key
 #genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 # 🔍 List available models and what they support
