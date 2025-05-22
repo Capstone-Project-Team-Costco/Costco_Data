@@ -35,13 +35,13 @@ jobs:
       - name: Zip the application
         run: |
           cd Notebooks/Lakshit/GeminiChatbot
-          zip -r ../../release.zip .
+          zip -r release.zip .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: ../../release.zip
+          path: Notebooks/Lakshit/GeminiChatbot/release.zip
 
   deploy:
     runs-on: ubuntu-latest
