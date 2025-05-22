@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and Deploy Chatbot to Azure
+name: Build and deploy Python app to Azure Web App - CostcoChatbot
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,23 +25,26 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install --no-cache-dir -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install -r Notebooks/Lakshit/GeminiChatbot/requirements.txt
 
-      - name: Create deployment package
-        run: zip -r release.zip . -x "venv/*" ".git/*" ".github/*"
+      - name: Zip the application
+        run: |
+          cd Notebooks/Lakshit/GeminiChatbot
+          zip -r release.zip .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: release.zip
+          path: Notebooks/Lakshit/GeminiChatbot/release.zip
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-and-deploy
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - name: Download artifact
@@ -49,18 +52,19 @@ jobs:
         with:
           name: python-app
 
-      - name: Unzip artifact
+      - name: Unzip for deployment
         run: unzip release.zip
 
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_590037C4C9114DC285AD0C37D741D485 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7BDC0C480B05484CA4737CC788B30A53 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_32DD4F1495C1423F936B5535D6EC7AB2 }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
         with:
           app-name: 'CostcoChatbot'
           slot-name: 'Production'
