@@ -1,5 +1,4 @@
-# Install libraries if not already installed
-# pip install pandas openai sentence-transformers faiss-cpu chainlit
+# Install libraries 
 
 import pandas as pd
 import openai
@@ -10,8 +9,7 @@ import numpy as np
 
 # Set up OpenAI API key
 
-
-# Load your CSV dataset
+# Load CSV dataset
 data = pd.read_csv('Final_Sentiment_Results_Costco.csv')
 
 # Use 'productName' + 'comment_body' + 'comment_year' + 'comment_month' for review text and 'sentiment_twitter_roberta' for sentiment labels
@@ -76,4 +74,3 @@ async def main(message: cl.Message):
     answer = ask_gpt4o(context, user_input)
     await cl.Message(content=answer).send()
 
-# To run: chainlit run AI_chatbot_code.py
